@@ -8,7 +8,6 @@ import requests
 import json
 import secrets # file that contains your API key
 import time
-import ast
 
 
 ######## self-defined functions ########
@@ -82,6 +81,7 @@ def make_url_request_using_cache(url, cache):
         save_cache(cache)
         return cache[url]
 
+
 def printPlaceNear(Aclass):
     '''Print out the Places near thespecific place.
     
@@ -98,7 +98,8 @@ def printPlaceNear(Aclass):
     print(f"Places near {Aclass.name}")
     print("----------------------------------")
 
-def printListOfNationalSites(Astring):
+
+def printHeaderForNationalSites(Astring):
     '''Print out the list of national sites.
 
     Parameters
@@ -113,6 +114,7 @@ def printListOfNationalSites(Astring):
     print("----------------------------------")
     print(f"List of national sites in {Astring}")
     print("----------------------------------")
+
 
 def printForStepFive(Adict):
     '''Print out the information of nearby places of specific sites in specific format.
@@ -137,7 +139,45 @@ def printForStepFive(Adict):
             print( "-" + ele['name'] +'(no cateogry): ' + ele['fields']['address'] + ", " + ele['fields']['city'] )
         else:
             print( '-' + ele['name'] + ' (' + ele['fields']['group_sic_code_name_ext'] + ")" + ': '  + ele['fields']['address'] + ", " + ele['fields']['city'])    
+
+
+def querryError():
+    '''Print out the error message and ask use to input the query string again.
     
+    Parameters
+    ----------
+    None
+    
+    Returns
+    -------
+    string
+        the query string
+    '''
+    print("[Error] Enter the Proper state name, please")
+    result = input("Enter a state name (e.g. Michigan, michigan) or 'exit' ")
+    result = result.lower()
+    if result == "exit":
+        quit()
+    else:    
+        return result
+
+
+def ListResultOfNationalSite(Alist):
+    '''Print out the National Sites.
+    
+    Parameters
+    ----------
+    Alist
+
+    
+    Returns
+    -------
+    none 
+    '''
+    for i in range(len(Alist)):
+        new_list.append(Alist[i])
+        print("[" + str(i+1) + "] ", Alist[i].info() )
+
 #### setting up parameters and API key and other stuff for use
 CACHE_DICT = {}
 CACHE_FILE_NAME = 'cacheSITE_Scraping.json'
@@ -148,9 +188,7 @@ new_list = []
 api_key = secrets.API_KEY
 
 
-
 ##### the following functions are initially defined by the instructors/GSIs
-
 class NationalSite:
     '''a national site
 
@@ -181,7 +219,6 @@ class NationalSite:
     def info(self):
         return self.name + " (" + self.category + "): " + self.address + " "+ self.zipcode
         
-    
 
 
 def build_state_url_dict():
@@ -260,10 +297,8 @@ def get_sites_for_state(state_url):
         site_list.append(soup_link_tag)
     for ele in site_list:
         url = 'https://www.nps.gov' + ele +'index.htm'
-        #print(url)
         sites_list.append(get_site_instance(url))
     return sites_list
-    
 
 
 def get_nearby_places(site_object):
@@ -287,6 +322,8 @@ def get_nearby_places(site_object):
 
 
 
+
+
 if __name__ == "__main__":
 
     
@@ -298,17 +335,14 @@ if __name__ == "__main__":
         generalDict = build_state_url_dict()
         while True:
             if query not in generalDict.keys():
-                print("[Error] Enter the Proper state name, please")
-                query = input("Enter a state name (e.g. Michigan, michigan) or 'exit' ")
-                query = query.lower()
+                query = querryError()  
             else:
                 break
     LinkforSite = generalDict[query]
     result = get_sites_for_state(LinkforSite)
-    printListOfNationalSites(query)
-    for i in range(len(result)):
-        new_list.append(result[i])
-        print("[" + str(i+1) + "] ", result[i].info() )
+    printHeaderForNationalSites(query)
+    ListResultOfNationalSite(result)
+
 
     while True:
         usr_input = input("Choose the number for detail search or 'exit', or 'back' ")
@@ -316,20 +350,18 @@ if __name__ == "__main__":
             quit()
         elif usr_input == "back":
             query = input("Enter a state name (e.g. Michigan, michigan) or 'exit' ")
+            if query == "exit":
+                quit()
             generalDict = build_state_url_dict()
             while True:
                 if query not in generalDict.keys():
-                    print("[Error] Enter the Proper state name, please")
-                    query = input("Enter a state name (e.g. Michigan, michigan) or 'exit' ")
-                    query = query.lower()
+                    query = querryError()
                 else:
                     break
             LinkforSite = generalDict[query]
             result = get_sites_for_state(LinkforSite)
-            printListOfNationalSites(query)
-            for i in range(len(result)):
-                new_list.append(result[i])
-                print("[" + str(i+1) + "] ", result[i].info() )
+            printHeaderForNationalSites(query)
+            ListResultOfNationalSite(result)
     
         elif usr_input.isnumeric() and int(usr_input) in range(len(new_list)+1):
             a = new_list[int(usr_input)-1]
