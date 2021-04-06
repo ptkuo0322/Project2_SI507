@@ -162,7 +162,7 @@ def querryError():
         return result
 
 
-def ListResultOfNationalSite(Alist):
+def listResultOfNationalSite(Alist):
     '''Print out the National Sites.
     
     Parameters
@@ -338,10 +338,10 @@ if __name__ == "__main__":
                 query = querryError()  
             else:
                 break
-    LinkforSite = generalDict[query]
-    result = get_sites_for_state(LinkforSite)
+    linkforSite = generalDict[query]
+    result = get_sites_for_state(linkforSite)
     printHeaderForNationalSites(query)
-    ListResultOfNationalSite(result)
+    listResultOfNationalSite(result)
 
 
     while True:
@@ -358,10 +358,10 @@ if __name__ == "__main__":
                     query = querryError()
                 else:
                     break
-            LinkforSite = generalDict[query]
-            result = get_sites_for_state(LinkforSite)
+            linkforSite = generalDict[query]
+            result = get_sites_for_state(linkforSite)
             printHeaderForNationalSites(query)
-            ListResultOfNationalSite(result)
+            listResultOfNationalSite(result)
     
         elif usr_input.isnumeric() and int(usr_input) in range(len(new_list)+1):
             a = new_list[int(usr_input)-1]
